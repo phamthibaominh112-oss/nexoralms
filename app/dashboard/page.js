@@ -1,89 +1,346 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-import { useRouter } from "next/navigation";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey =
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+import { supabase } from "../../lib/supabase";
+import styles from "./dashboard.module.css";
 
-const supabase =
-  supabaseUrl && supabaseAnonKey
-    ? createClient(supabaseUrl, supabaseAnonKey)
-    : null;
+const lessonNames = [
+  "Introducing yourself",
+  "Numbers and personal information",
+  "Family and relationships",
+  "Daily routines",
+  "Food and drinks",
+  "Home and neighbourhood",
+  "Study and work",
+  "Free-time activities",
+  "Travel and transport",
+  "Foundation checkpoint",
+  "Describing people",
+  "Past experiences",
+  "Future plans",
+  "Health and wellbeing",
+  "Shopping and services",
+  "Technology in daily life",
+  "Weather and environment",
+  "Culture and celebrations",
+  "Making comparisons",
+  "Essential English checkpoint",
+];
+
+const navigation = [
+  {
+    label: "Dashboard",
+    href: "/dashboard",
+    icon: "D",
+    active: true,
+  },
+  {
+    label: "Learning roadmap",
+    href: "/roadmap",
+    icon: "R",
+  },
+  {
+    label: "Learner profile",
+    href: "/onboarding",
+    icon: "P",
+  },
+];
+
+function getLessonName(level) {
+  if (
+    level >= 1 &&
+    level <= lessonNames.length
+  ) {
+    return lessonNames[level - 1];
+  }
+
+  const cycle = [
+    "Vocabulary development",
+    "Grammar accuracy",
+    "Listening comprehension",
+    "Reading strategies",
+    "Speaking fluency",
+    "Writing development",
+    "Pronunciation practice",
+    "IELTS skill integration",
+    "Exam strategy",
+    "Stage checkpoint",
+  ];
+
+  return cycle[(level - 1) % cycle.length];
+}
+
+function getStage(level) {
+  if (level <= 10) {
+    return {
+      name: "Starter Foundations",
+      cefr: "Pre-A1",
+    };
+  }
+
+  if (level <= 20) {
+    return {
+      name: "Essential English",
+      cefr: "A1",
+    };
+  }
+
+  if (level <= 30) {
+    return {
+      name: "Everyday Communication",
+      cefr: "A2",
+    };
+  }
+
+  if (level <= 40) {
+    return {
+      name: "Independent English",
+      cefr: "B1",
+    };
+  }
+
+  if (level <= 50) {
+    return {
+      name: "IELTS Core Skills",
+      cefr: "B1+",
+    };
+  }
+
+  if (level <= 60) {
+    return {
+      name: "Academic Development",
+      cefr: "B2",
+    };
+  }
+
+  if (level <= 70) {
+    return {
+      name: "Confident IELTS User",
+      cefr: "B2+",
+    };
+  }
+
+  if (level <= 80) {
+    return {
+      name: "Advanced IELTS Skills",
+      cefr: "C1",
+    };
+  }
+
+  if (level <= 90) {
+    return {
+      name: "Band 7.5 Performance",
+      cefr: "C1+",
+    };
+  }
+
+  return {
+    name: "Road to Band 8",
+    cefr: "Advanced",
+  };
+}
+
+function formatActivityDate(value) {
+  if (!value) {
+    return "Recently";
+  }
+
+  const activityDate = new Date(value);
+  const now = new Date();
+
+  const todayStart = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate()
+  );
+
+  const activityStart = new Date(
+    activityDate.getFullYear(),
+    activityDate.getMonth(),
+    activityDate.getDate()
+  );
+
+  const difference =
+    Math.round(
+      (todayStart - activityStart) /
+        86400000
+    );
+
+  if (difference === 0) {
+    return "Today";
+  }
+
+  if (difference === 1) {
+    return "Yesterday";
+  }
+
+  return activityDate.toLocaleDateString(
+    "en-US",
+    {
+      month: "short",
+      day: "numeric",
+      year:
+        activityDate.getFullYear() !==
+        now.getFullYear()
+          ? "numeric"
+          : undefined,
+    }
+  );
+}
+
+function getInitials(name, email) {
+  const source =
+    name?.trim() ||
+    email?.split("@")[0] ||
+    "N";
+
+  const parts = source
+    .split(" ")
+    .filter(Boolean);
+
+  if (parts.length >= 2) {
+    return (
+      parts[0][0] +
+      parts[parts.length - 1][0]
+    ).toUpperCase();
+  }
+
+  return source
+    .slice(0, 2)
+    .toUpperCase();
+}
 
 export default function DashboardPage() {
   const router = useRouter();
 
-  const [loading, setLoading] = useState(true);
-  const [loggingOut, setLoggingOut] = useState(false);
-  const [user, setUser] = useState(null);
-  const [profile, setProfile] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] =
+    useState(true);
+
+  const [loggingOut, setLoggingOut] =
+    useState(false);
+
+  const [user, setUser] =
+    useState(null);
+
+  const [profile, setProfile] =
+    useState(null);
+
+  const [activities, setActivities] =
+    useState([]);
+
+  const [errorMessage, setErrorMessage] =
+    useState("");
+
+  const loadDashboard = useCallback(
+    async () => {
+      setLoading(true);
+      setErrorMessage("");
+
+      if (!supabase) {
+        setErrorMessage(
+          "Supabase environment variables are missing."
+        );
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const {
+          data: userData,
+          error: userError,
+        } = await supabase.auth.getUser();
+
+        if (userError) {
+          throw userError;
+        }
+
+        if (!userData?.user) {
+          router.replace("/auth");
+          return;
+        }
+
+        const currentUser =
+          userData.user;
+
+        setUser(currentUser);
+
+        const {
+          data: profileData,
+          error: profileError,
+        } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", currentUser.id)
+          .maybeSingle();
+
+        if (profileError) {
+          throw profileError;
+        }
+
+        if (
+          !profileData ||
+          !profileData.onboarding_completed
+        ) {
+          router.replace("/onboarding");
+          return;
+        }
+
+        setProfile(profileData);
+
+        const {
+          data: progressData,
+          error: progressError,
+        } = await supabase
+          .from("user_progress")
+          .select(
+            "level_id, completed, earned_xp, completed_at, updated_at"
+          )
+          .eq(
+            "user_id",
+            currentUser.id
+          )
+          .eq("completed", true)
+          .order("completed_at", {
+            ascending: false,
+          })
+          .limit(6);
+
+        if (progressError) {
+          throw progressError;
+        }
+
+        setActivities(
+          progressData || []
+        );
+      } catch (error) {
+        setErrorMessage(
+          error?.message ||
+            "The dashboard could not be loaded."
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [router]
+  );
 
   useEffect(() => {
     loadDashboard();
-  }, []);
-
-  async function loadDashboard() {
-    if (!supabase) {
-      setErrorMessage(
-        "Supabase environment variables are missing. Check your .env.local file and Vercel Environment Variables."
-      );
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const {
-        data: { session },
-        error: sessionError,
-      } = await supabase.auth.getSession();
-
-      if (sessionError) {
-        throw sessionError;
-      }
-
-      if (!session) {
-        router.replace("/auth");
-        return;
-      }
-
-      setUser(session.user);
-
-      const {
-        data: profileData,
-        error: profileError,
-      } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", session.user.id)
-        .maybeSingle();
-
-      if (profileError) {
-        throw profileError;
-      }
-
-      if (!profileData?.onboarding_completed) {
-        router.replace("/onboarding");
-        return;
-      }
-
-      setProfile(profileData);
-    } catch (error) {
-      setErrorMessage(
-        error?.message ||
-          "The dashboard could not be loaded."
-      );
-    } finally {
-      setLoading(false);
-    }
-  }
+  }, [loadDashboard]);
 
   async function handleLogout() {
-    if (!supabase) return;
+    if (!supabase) {
+      return;
+    }
 
     setLoggingOut(true);
 
@@ -93,759 +350,1006 @@ export default function DashboardPage() {
     router.refresh();
   }
 
+  const dashboardData = useMemo(() => {
+    const currentLevel = Math.min(
+      Math.max(
+        Number(
+          profile?.current_lesson || 1
+        ),
+        1
+      ),
+      100
+    );
+
+    const completedLevels =
+      activities.length > 0
+        ? Math.max(
+            currentLevel - 1,
+            activities.length
+          )
+        : Math.max(
+            currentLevel - 1,
+            0
+          );
+
+    const progressPercentage =
+      Math.min(
+        Math.round(
+          (completedLevels / 100) *
+            100
+        ),
+        100
+      );
+
+    const totalXp = Number(
+      profile?.total_xp || 0
+    );
+
+    const targetBand = Number(
+      profile?.target_band || 8
+    ).toFixed(1);
+
+    const dailyMinutes = Number(
+      profile?.daily_minutes || 30
+    );
+
+    const streakDays = Number(
+      profile?.streak_days || 0
+    );
+
+    const stage =
+      getStage(currentLevel);
+
+    return {
+      currentLevel,
+      completedLevels,
+      progressPercentage,
+      totalXp,
+      targetBand,
+      dailyMinutes,
+      streakDays,
+      stage,
+      lessonName:
+        getLessonName(currentLevel),
+      xpReward:
+        80 +
+        ((currentLevel - 1) % 5) *
+          10,
+    };
+  }, [profile, activities]);
+
   if (loading) {
     return (
-      <main style={styles.loadingPage}>
-        <div style={styles.spinner} />
+      <main
+        className={
+          styles.loadingPage
+        }
+      >
+        <div
+          className={styles.spinner}
+        />
 
-        <p style={styles.loadingText}>
-          Loading your Nexora dashboard...
+        <p
+          className={
+            styles.loadingText
+          }
+        >
+          Loading your Nexora
+          dashboard...
         </p>
       </main>
     );
   }
 
-  if (errorMessage) {
+  if (
+    errorMessage ||
+    !profile ||
+    !user
+  ) {
     return (
-      <main style={styles.loadingPage}>
-        <section style={styles.errorCard}>
-          <h1 style={styles.errorTitle}>
+      <main
+        className={
+          styles.loadingPage
+        }
+      >
+        <section
+          className={styles.errorCard}
+        >
+          <h1
+            className={
+              styles.errorTitle
+            }
+          >
             Dashboard unavailable
           </h1>
 
-          <p style={styles.errorText}>
-            {errorMessage}
+          <p
+            className={
+              styles.errorText
+            }
+          >
+            {errorMessage ||
+              "Your learner profile could not be found."}
           </p>
 
-          <Link href="/auth" style={styles.primaryLink}>
-            Return to sign in
-          </Link>
+          <button
+            type="button"
+            onClick={loadDashboard}
+            className={
+              styles.retryButton
+            }
+          >
+            Try again
+          </button>
         </section>
       </main>
     );
   }
 
   const learnerName =
-    profile?.full_name ||
-    user?.email?.split("@")[0] ||
+    profile.full_name ||
+    user.email?.split("@")[0] ||
     "Learner";
 
-  const currentLesson =
-    profile?.current_lesson || 1;
+  const initials = getInitials(
+    learnerName,
+    user.email
+  );
 
-  const totalXp =
-    profile?.total_xp || 0;
-
-  const streakDays =
-    profile?.streak_days || 0;
-
-  const estimatedBand =
-    profile?.estimated_band || "Not assessed";
-
-  const targetBand =
-    profile?.target_band || "7.0";
-
-  const dailyMinutes =
-    profile?.daily_minutes || 30;
+  const achievements = [
+    {
+      name: "First Lesson",
+      description:
+        "Complete your first Nexora level.",
+      unlocked:
+        dashboardData.completedLevels >=
+        1,
+      icon: "01",
+    },
+    {
+      name: "100 XP",
+      description:
+        "Earn your first 100 XP.",
+      unlocked:
+        dashboardData.totalXp >= 100,
+      icon: "XP",
+    },
+    {
+      name: "Stage 1",
+      description:
+        "Complete the first 10 levels.",
+      unlocked:
+        dashboardData.completedLevels >=
+        10,
+      icon: "S1",
+    },
+    {
+      name: "7-day streak",
+      description:
+        "Study for seven consecutive days.",
+      unlocked:
+        dashboardData.streakDays >= 7,
+      icon: "7D",
+    },
+  ];
 
   return (
-    <main style={styles.page}>
-      <div style={styles.backgroundGlowOne} />
-      <div style={styles.backgroundGlowTwo} />
+    <main className={styles.page}>
+      <aside
+        className={styles.sidebar}
+      >
+        <Link
+          href="/"
+          className={styles.brand}
+        >
+          <span
+            className={
+              styles.brandMark
+            }
+          >
+            N
+          </span>
 
-      <div style={styles.shell}>
-        <aside style={styles.sidebar}>
-          <Link href="/" style={styles.brand}>
-            <span style={styles.brandMark}>N</span>
+          <span>
+            <strong
+              className={
+                styles.brandName
+              }
+            >
+              NEXORA
+            </strong>
+
+            <small
+              className={
+                styles.brandSubtitle
+              }
+            >
+              Road to IELTS 8.0
+            </small>
+          </span>
+        </Link>
+
+        <nav
+          className={
+            styles.navigation
+          }
+        >
+          {navigation.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className={`${styles.navLink} ${
+                item.active
+                  ? styles.activeNav
+                  : ""
+              }`}
+            >
+              <span
+                className={
+                  styles.navIcon
+                }
+              >
+                {item.icon}
+              </span>
+
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        <section
+          className={
+            styles.sidebarPlan
+          }
+        >
+          <p
+            className={
+              styles.sidebarPlanLabel
+            }
+          >
+            YOUR LEARNING PLAN
+          </p>
+
+          <h3
+            className={
+              styles.sidebarPlanTitle
+            }
+          >
+            IELTS{" "}
+            {
+              dashboardData.targetBand
+            }
+          </h3>
+
+          <p
+            className={
+              styles.sidebarPlanText
+            }
+          >
+            {
+              dashboardData.dailyMinutes
+            }{" "}
+            minutes of focused practice
+            each day.
+          </p>
+        </section>
+
+        <footer
+          className={
+            styles.sidebarFooter
+          }
+        >
+          <p
+            className={
+              styles.accountName
+            }
+          >
+            {learnerName}
+          </p>
+
+          <p
+            className={
+              styles.accountEmail
+            }
+          >
+            {user.email}
+          </p>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className={
+              styles.logoutButton
+            }
+          >
+            {loggingOut
+              ? "Signing out..."
+              : "Sign out"}
+          </button>
+        </footer>
+      </aside>
+
+      <section
+        className={styles.content}
+      >
+        <header
+          className={styles.topbar}
+        >
+          <div>
+            <p
+              className={
+                styles.eyebrow
+              }
+            >
+              LEARNER DASHBOARD
+            </p>
+
+            <h1
+              className={
+                styles.pageTitle
+              }
+            >
+              Welcome back,{" "}
+              {learnerName.split(" ")[0]}
+            </h1>
+
+            <p
+              className={
+                styles.subtitle
+              }
+            >
+              Continue building your
+              English step by step and
+              move closer to your IELTS{" "}
+              {
+                dashboardData.targetBand
+              }{" "}
+              goal.
+            </p>
+          </div>
+
+          <div
+            className={
+              styles.profilePill
+            }
+          >
+            <span
+              className={styles.avatar}
+            >
+              {initials}
+            </span>
 
             <span>
-              <strong style={styles.brandName}>
-                NEXORA
+              <strong
+                className={
+                  styles.profileName
+                }
+              >
+                {learnerName}
               </strong>
 
-              <small style={styles.brandSubtitle}>
-                Road to IELTS 8.0
+              <small
+                className={
+                  styles.profileLevel
+                }
+              >
+                {
+                  dashboardData.stage
+                    .cefr
+                }{" "}
+                learner
               </small>
             </span>
-          </Link>
-
-          <nav style={styles.navigation}>
-            <Link
-              href="/dashboard"
-              style={{
-                ...styles.navItem,
-                ...styles.activeNavItem,
-              }}
-            >
-              Dashboard
-            </Link>
-
-            <Link
-              href="/roadmap"
-              style={styles.navItem}
-            >
-              Learning roadmap
-            </Link>
-
-            <Link
-              href="/profile"
-              style={styles.navItem}
-            >
-              Learner profile
-            </Link>
-          </nav>
-
-          <div style={styles.sidebarFooter}>
-            <p style={styles.accountLabel}>
-              SIGNED IN AS
-            </p>
-
-            <p style={styles.accountEmail}>
-              {user?.email}
-            </p>
-
-            <button
-              type="button"
-              onClick={handleLogout}
-              disabled={loggingOut}
-              style={{
-                ...styles.logoutButton,
-                opacity: loggingOut ? 0.65 : 1,
-              }}
-            >
-              {loggingOut
-                ? "Signing out..."
-                : "Sign out"}
-            </button>
           </div>
-        </aside>
+        </header>
 
-        <section style={styles.content}>
-          <header style={styles.header}>
-            <div>
-              <p style={styles.eyebrow}>
-                LEARNER DASHBOARD
-              </p>
+        <section
+          className={styles.hero}
+        >
+          <div
+            className={
+              styles.heroContent
+            }
+          >
+            <p
+              className={
+                styles.heroLabel
+              }
+            >
+              CONTINUE LEARNING
+            </p>
 
-              <h1 style={styles.title}>
-                Welcome back, {learnerName}
-              </h1>
+            <h2
+              className={
+                styles.heroTitle
+              }
+            >
+              Level{" "}
+              {
+                dashboardData.currentLevel
+              }
+              :{" "}
+              {
+                dashboardData.lessonName
+              }
+            </h2>
 
-              <p style={styles.subtitle}>
-                Continue building your English skills
-                toward IELTS {targetBand}.
-              </p>
+            <p
+              className={
+                styles.heroText
+              }
+            >
+              Complete vocabulary,
+              grammar, listening,
+              speaking and the final
+              checkpoint to unlock your
+              next level.
+            </p>
+
+            <div
+              className={
+                styles.heroMeta
+              }
+            >
+              <span
+                className={
+                  styles.metaPill
+                }
+              >
+                {
+                  dashboardData.stage
+                    .name
+                }
+              </span>
+
+              <span
+                className={
+                  styles.metaPill
+                }
+              >
+                {
+                  dashboardData.stage
+                    .cefr
+                }
+              </span>
+
+              <span
+                className={
+                  styles.metaPill
+                }
+              >
+                25–30 minutes
+              </span>
+
+              <span
+                className={
+                  styles.metaPill
+                }
+              >
+                +
+                {
+                  dashboardData.xpReward
+                }{" "}
+                XP
+              </span>
             </div>
 
-            <div style={styles.avatar}>
-              {learnerName
-                .charAt(0)
-                .toUpperCase()}
-            </div>
-          </header>
+            <Link
+              href={`/level/${dashboardData.currentLevel}`}
+              className={
+                styles.continueButton
+              }
+            >
+              Continue Level{" "}
+              {
+                dashboardData.currentLevel
+              }{" "}
+              →
+            </Link>
+          </div>
 
-          <section style={styles.statsGrid}>
-            <StatCard
-              label="Current level"
-              value={currentLesson}
-              helper={`English level: ${
-                profile?.current_level || "Not set"
-              }`}
-            />
+          <div
+            className={
+              styles.heroLevel
+            }
+          >
+            <span
+              className={
+                styles.heroLevelLabel
+              }
+            >
+              CURRENT LEVEL
+            </span>
 
-            <StatCard
-              label="Total XP"
-              value={totalXp}
-              helper="Keep completing lessons"
-            />
+            <strong
+              className={
+                styles.heroLevelValue
+              }
+            >
+              {
+                dashboardData.currentLevel
+              }
+            </strong>
 
-            <StatCard
-              label="Learning streak"
-              value={`${streakDays} days`}
-              helper="Study daily to grow your streak"
-            />
+            <span
+              className={
+                styles.heroLevelTotal
+              }
+            >
+              of 100
+            </span>
+          </div>
+        </section>
 
-            <StatCard
-              label="Estimated IELTS"
-              value={estimatedBand}
-              helper={`Target band: ${targetBand}`}
-            />
-          </section>
+        <section
+          className={
+            styles.statsGrid
+          }
+        >
+          <StatCard
+            label="Completed"
+            value={
+              dashboardData.completedLevels
+            }
+            detail="levels completed"
+          />
 
-          <section style={styles.mainGrid}>
-            <article style={styles.missionCard}>
-              <div style={styles.cardHeader}>
-                <div>
-                  <p style={styles.cardEyebrow}>
-                    TODAY&apos;S PLAN
-                  </p>
+          <StatCard
+            label="Total XP"
+            value={
+              dashboardData.totalXp
+            }
+            detail="experience earned"
+          />
 
-                  <h2 style={styles.cardTitle}>
-                    Your daily mission
-                  </h2>
-                </div>
+          <StatCard
+            label="Current CEFR"
+            value={
+              dashboardData.stage.cefr
+            }
+            detail={
+              dashboardData.stage.name
+            }
+          />
 
-                <span style={styles.timeBadge}>
-                  {dailyMinutes} minutes
-                </span>
-              </div>
+          <StatCard
+            label="Study streak"
+            value={`${dashboardData.streakDays}d`}
+            detail="consecutive days"
+          />
+        </section>
 
-              <div style={styles.progressTrack}>
-                <div style={styles.progressValue} />
-              </div>
+        <section
+          className={
+            styles.dashboardGrid
+          }
+        >
+          <article
+            className={styles.card}
+          >
+            <header
+              className={
+                styles.cardHeader
+              }
+            >
+              <div>
+                <p
+                  className={
+                    styles.cardEyebrow
+                  }
+                >
+                  ROAD TO IELTS{" "}
+                  {
+                    dashboardData.targetBand
+                  }
+                </p>
 
-              <div style={styles.tasks}>
-                <MissionItem
-                  title="Review vocabulary"
-                  duration="5 min"
-                  completed
-                />
-
-                <MissionItem
-                  title="Grammar practice"
-                  duration="10 min"
-                />
-
-                <MissionItem
-                  title="Listening challenge"
-                  duration="10 min"
-                />
-
-                <MissionItem
-                  title="Speaking mission"
-                  duration="5 min"
-                />
+                <h2
+                  className={
+                    styles.cardTitle
+                  }
+                >
+                  Learning progress
+                </h2>
               </div>
 
               <Link
                 href="/roadmap"
-                style={styles.primaryLink}
+                className={
+                  styles.cardAction
+                }
               >
-                Continue learning →
+                View roadmap →
               </Link>
-            </article>
+            </header>
 
-            <article style={styles.profileCard}>
-              <p style={styles.cardEyebrow}>
-                YOUR GOAL
-              </p>
-
-              <h2 style={styles.goalBand}>
-                IELTS {targetBand}
-              </h2>
-
-              <p style={styles.goalText}>
-                Starting from{" "}
-                {profile?.current_level || "Pre-A1"}
-                , with a daily target of{" "}
-                {dailyMinutes} minutes.
-              </p>
-
-              <div style={styles.goalDetails}>
-                <div>
-                  <span style={styles.detailLabel}>
-                    Native language
-                  </span>
-
-                  <strong style={styles.detailValue}>
-                    {profile?.native_language ||
-                      "Not provided"}
+            <div
+              className={
+                styles.progressLayout
+              }
+            >
+              <div
+                className={
+                  styles.progressRing
+                }
+                style={{
+                  "--progress": `${dashboardData.progressPercentage}%`,
+                }}
+              >
+                <div
+                  className={
+                    styles.progressRingInner
+                  }
+                >
+                  <strong
+                    className={
+                      styles.progressPercentage
+                    }
+                  >
+                    {
+                      dashboardData.progressPercentage
+                    }
+                    %
                   </strong>
-                </div>
 
-                <div>
-                  <span style={styles.detailLabel}>
-                    Exam date
+                  <span
+                    className={
+                      styles.progressCaption
+                    }
+                  >
+                    COMPLETE
                   </span>
-
-                  <strong style={styles.detailValue}>
-                    {profile?.exam_date ||
-                      "Not scheduled"}
-                  </strong>
                 </div>
               </div>
 
-              <Link
-                href="/onboarding"
-                style={styles.secondaryLink}
+              <div
+                className={
+                  styles.progressInfo
+                }
               >
-                Update learning profile
-              </Link>
-            </article>
-          </section>
+                <ProgressRow
+                  label="Current stage"
+                  value={
+                    dashboardData.stage
+                      .name
+                  }
+                />
+
+                <ProgressRow
+                  label="Levels completed"
+                  value={`${dashboardData.completedLevels} of 100`}
+                />
+
+                <ProgressRow
+                  label="Current level"
+                  value={`Level ${dashboardData.currentLevel}`}
+                />
+
+                <ProgressRow
+                  label="Target band"
+                  value={`IELTS ${dashboardData.targetBand}`}
+                />
+              </div>
+            </div>
+          </article>
+
+          <article
+            className={styles.card}
+          >
+            <header
+              className={
+                styles.cardHeader
+              }
+            >
+              <div>
+                <p
+                  className={
+                    styles.cardEyebrow
+                  }
+                >
+                  DAILY PLAN
+                </p>
+
+                <h2
+                  className={
+                    styles.cardTitle
+                  }
+                >
+                  Today&apos;s goal
+                </h2>
+              </div>
+            </header>
+
+            <div
+              className={
+                styles.goalBox
+              }
+            >
+              <div
+                className={
+                  styles.goalTop
+                }
+              >
+                <div>
+                  <strong
+                    className={
+                      styles.goalMinutes
+                    }
+                  >
+                    {
+                      dashboardData.dailyMinutes
+                    }
+                  </strong>
+
+                  <span
+                    className={
+                      styles.goalUnit
+                    }
+                  >
+                    {" "}
+                    minutes
+                  </span>
+                </div>
+
+                <span
+                  className={
+                    styles.goalBadge
+                  }
+                >
+                  DAILY TARGET
+                </span>
+              </div>
+
+              <p
+                className={
+                  styles.goalText
+                }
+              >
+                Complete one focused
+                learning session today to
+                maintain your momentum.
+              </p>
+            </div>
+          </article>
+
+          <article
+            className={styles.card}
+          >
+            <header
+              className={
+                styles.cardHeader
+              }
+            >
+              <div>
+                <p
+                  className={
+                    styles.cardEyebrow
+                  }
+                >
+                  LEARNING HISTORY
+                </p>
+
+                <h2
+                  className={
+                    styles.cardTitle
+                  }
+                >
+                  Recent activity
+                </h2>
+              </div>
+            </header>
+
+            {activities.length > 0 ? (
+              <div
+                className={
+                  styles.activityList
+                }
+              >
+                {activities.map(
+                  (activity) => (
+                    <div
+                      key={
+                        activity.level_id
+                      }
+                      className={
+                        styles.activityItem
+                      }
+                    >
+                      <span
+                        className={
+                          styles.activityIcon
+                        }
+                      >
+                        ✓
+                      </span>
+
+                      <div>
+                        <p
+                          className={
+                            styles.activityTitle
+                          }
+                        >
+                          Completed Level{" "}
+                          {
+                            activity.level_id
+                          }
+                        </p>
+
+                        <p
+                          className={
+                            styles.activityDate
+                          }
+                        >
+                          {formatActivityDate(
+                            activity.completed_at ||
+                              activity.updated_at
+                          )}
+                        </p>
+                      </div>
+
+                      <span
+                        className={
+                          styles.activityXp
+                        }
+                      >
+                        +
+                        {Number(
+                          activity.earned_xp ||
+                            0
+                        )}{" "}
+                        XP
+                      </span>
+                    </div>
+                  )
+                )}
+              </div>
+            ) : (
+              <div
+                className={
+                  styles.emptyState
+                }
+              >
+                Complete your first
+                lesson and your activity
+                history will appear here.
+              </div>
+            )}
+          </article>
+
+          <article
+            className={styles.card}
+          >
+            <header
+              className={
+                styles.cardHeader
+              }
+            >
+              <div>
+                <p
+                  className={
+                    styles.cardEyebrow
+                  }
+                >
+                  ACHIEVEMENTS
+                </p>
+
+                <h2
+                  className={
+                    styles.cardTitle
+                  }
+                >
+                  Your milestones
+                </h2>
+              </div>
+            </header>
+
+            <div
+              className={
+                styles.achievementGrid
+              }
+            >
+              {achievements.map(
+                (achievement) => (
+                  <article
+                    key={
+                      achievement.name
+                    }
+                    className={`${styles.achievement} ${
+                      achievement.unlocked
+                        ? styles.achievementUnlocked
+                        : styles.achievementLocked
+                    }`}
+                  >
+                    <span
+                      className={
+                        styles.achievementIcon
+                      }
+                    >
+                      {achievement.unlocked
+                        ? achievement.icon
+                        : "—"}
+                    </span>
+
+                    <h3
+                      className={
+                        styles.achievementName
+                      }
+                    >
+                      {achievement.name}
+                    </h3>
+
+                    <p
+                      className={
+                        styles.achievementText
+                      }
+                    >
+                      {
+                        achievement.description
+                      }
+                    </p>
+                  </article>
+                )
+              )}
+            </div>
+          </article>
         </section>
-      </div>
+      </section>
     </main>
   );
 }
 
-function StatCard({ label, value, helper }) {
+function StatCard({
+  label,
+  value,
+  detail,
+}) {
   return (
-    <article style={styles.statCard}>
-      <span style={styles.statLabel}>{label}</span>
+    <article
+      className={styles.statCard}
+    >
+      <span
+        className={styles.statLabel}
+      >
+        {label}
+      </span>
 
-      <strong style={styles.statValue}>
+      <strong
+        className={styles.statValue}
+      >
         {value}
       </strong>
 
-      <small style={styles.statHelper}>
-        {helper}
-      </small>
+      <span
+        className={styles.statDetail}
+      >
+        {detail}
+      </span>
     </article>
   );
 }
 
-function MissionItem({
-  title,
-  duration,
-  completed = false,
+function ProgressRow({
+  label,
+  value,
 }) {
   return (
-    <div style={styles.missionItem}>
+    <div
+      className={styles.progressRow}
+    >
       <span
-        style={{
-          ...styles.taskCheck,
-          ...(completed
-            ? styles.taskCheckCompleted
-            : {}),
-        }}
+        className={styles.progressKey}
       >
-        {completed ? "✓" : ""}
+        {label}
       </span>
 
-      <span style={styles.taskTitle}>
-        {title}
-      </span>
-
-      <small style={styles.taskDuration}>
-        {duration}
-      </small>
+      <strong
+        className={
+          styles.progressValueText
+        }
+      >
+        {value}
+      </strong>
     </div>
   );
 }
-
-const styles = {
-  page: {
-    position: "relative",
-    minHeight: "100vh",
-    overflow: "hidden",
-    background: "#f4f6fb",
-    fontFamily: "Arial, Helvetica, sans-serif",
-  },
-
-  loadingPage: {
-    minHeight: "100vh",
-    display: "grid",
-    placeItems: "center",
-    alignContent: "center",
-    gap: "16px",
-    padding: "24px",
-    background:
-      "linear-gradient(145deg, #101735, #25194e)",
-    fontFamily: "Arial, Helvetica, sans-serif",
-  },
-
-  spinner: {
-    width: "42px",
-    height: "42px",
-    border: "4px solid rgba(255,255,255,.22)",
-    borderTopColor: "#ffffff",
-    borderRadius: "50%",
-  },
-
-  loadingText: {
-    color: "#ffffff",
-    fontSize: "14px",
-  },
-
-  errorCard: {
-    width: "100%",
-    maxWidth: "480px",
-    padding: "32px",
-    borderRadius: "22px",
-    background: "#ffffff",
-    textAlign: "center",
-  },
-
-  errorTitle: {
-    margin: "0 0 12px",
-    color: "#172452",
-  },
-
-  errorText: {
-    margin: "0 0 22px",
-    color: "#737b96",
-    lineHeight: 1.6,
-  },
-
-  backgroundGlowOne: {
-    position: "absolute",
-    width: "420px",
-    height: "420px",
-    top: "-220px",
-    right: "-170px",
-    borderRadius: "50%",
-    background: "rgba(236,66,199,.12)",
-    filter: "blur(14px)",
-  },
-
-  backgroundGlowTwo: {
-    position: "absolute",
-    width: "360px",
-    height: "360px",
-    bottom: "-220px",
-    left: "80px",
-    borderRadius: "50%",
-    background: "rgba(116,72,255,.12)",
-    filter: "blur(14px)",
-  },
-
-  shell: {
-    position: "relative",
-    zIndex: 1,
-    minHeight: "100vh",
-    display: "grid",
-    gridTemplateColumns: "260px minmax(0, 1fr)",
-  },
-
-  sidebar: {
-    display: "flex",
-    flexDirection: "column",
-    padding: "30px 22px",
-    background:
-      "linear-gradient(180deg, #121936, #191f46)",
-    color: "#ffffff",
-  },
-
-  brand: {
-    display: "flex",
-    alignItems: "center",
-    gap: "12px",
-    color: "#ffffff",
-    textDecoration: "none",
-  },
-
-  brandMark: {
-    width: "43px",
-    height: "43px",
-    display: "grid",
-    placeItems: "center",
-    borderRadius: "14px",
-    background:
-      "linear-gradient(135deg,#7448ff,#ec42c7)",
-    fontWeight: "900",
-  },
-
-  brandName: {
-    display: "block",
-    letterSpacing: "2px",
-  },
-
-  brandSubtitle: {
-    display: "block",
-    marginTop: "3px",
-    color: "#aeb5d4",
-    fontSize: "9px",
-  },
-
-  navigation: {
-    display: "grid",
-    gap: "8px",
-    marginTop: "48px",
-  },
-
-  navItem: {
-    padding: "13px 15px",
-    borderRadius: "11px",
-    color: "#bfc5de",
-    textDecoration: "none",
-    fontSize: "13px",
-    fontWeight: "700",
-  },
-
-  activeNavItem: {
-    background: "rgba(255,255,255,.1)",
-    color: "#ffffff",
-  },
-
-  sidebarFooter: {
-    marginTop: "auto",
-    paddingTop: "28px",
-    borderTop: "1px solid rgba(255,255,255,.1)",
-  },
-
-  accountLabel: {
-    margin: 0,
-    color: "#7f88ae",
-    fontSize: "9px",
-    fontWeight: "800",
-    letterSpacing: "1px",
-  },
-
-  accountEmail: {
-    overflow: "hidden",
-    margin: "7px 0 15px",
-    color: "#ffffff",
-    fontSize: "11px",
-    textOverflow: "ellipsis",
-  },
-
-  logoutButton: {
-    width: "100%",
-    padding: "11px",
-    border: "1px solid rgba(255,255,255,.15)",
-    borderRadius: "10px",
-    background: "rgba(255,255,255,.06)",
-    color: "#ffffff",
-    cursor: "pointer",
-  },
-
-  content: {
-    padding: "42px",
-  },
-
-  header: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: "24px",
-    marginBottom: "31px",
-  },
-
-  eyebrow: {
-    margin: "0 0 8px",
-    color: "#7448ff",
-    fontSize: "9px",
-    fontWeight: "900",
-    letterSpacing: "1.4px",
-  },
-
-  title: {
-    margin: 0,
-    color: "#172452",
-    fontSize: "clamp(28px, 4vw, 42px)",
-  },
-
-  subtitle: {
-    margin: "10px 0 0",
-    color: "#737b96",
-    fontSize: "14px",
-  },
-
-  avatar: {
-    width: "54px",
-    height: "54px",
-    display: "grid",
-    placeItems: "center",
-    flexShrink: 0,
-    borderRadius: "18px",
-    background:
-      "linear-gradient(135deg,#7448ff,#ec42c7)",
-    color: "#ffffff",
-    fontSize: "19px",
-    fontWeight: "900",
-  },
-
-  statsGrid: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(190px, 1fr))",
-    gap: "17px",
-  },
-
-  statCard: {
-    display: "grid",
-    gap: "9px",
-    padding: "22px",
-    border: "1px solid #e7e9f2",
-    borderRadius: "18px",
-    background: "#ffffff",
-    boxShadow: "0 10px 30px rgba(30,40,80,.05)",
-  },
-
-  statLabel: {
-    color: "#81889f",
-    fontSize: "11px",
-    fontWeight: "700",
-  },
-
-  statValue: {
-    color: "#172452",
-    fontSize: "30px",
-  },
-
-  statHelper: {
-    color: "#a0a6b8",
-    fontSize: "10px",
-    lineHeight: 1.4,
-  },
-
-  mainGrid: {
-    display: "grid",
-    gridTemplateColumns:
-      "minmax(0, 1.6fr) minmax(270px, .8fr)",
-    gap: "20px",
-    marginTop: "20px",
-  },
-
-  missionCard: {
-    padding: "27px",
-    borderRadius: "20px",
-    background: "#ffffff",
-    boxShadow: "0 10px 30px rgba(30,40,80,.05)",
-  },
-
-  profileCard: {
-    padding: "27px",
-    borderRadius: "20px",
-    background:
-      "linear-gradient(145deg,#171f48,#291d55)",
-    color: "#ffffff",
-    boxShadow: "0 18px 50px rgba(25,30,70,.18)",
-  },
-
-  cardHeader: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    gap: "15px",
-  },
-
-  cardEyebrow: {
-    margin: "0 0 7px",
-    color: "#a794ff",
-    fontSize: "9px",
-    fontWeight: "900",
-    letterSpacing: "1.2px",
-  },
-
-  cardTitle: {
-    margin: 0,
-    color: "#172452",
-    fontSize: "23px",
-  },
-
-  timeBadge: {
-    padding: "8px 11px",
-    borderRadius: "999px",
-    background: "#f1edff",
-    color: "#7448ff",
-    fontSize: "10px",
-    fontWeight: "800",
-  },
-
-  progressTrack: {
-    height: "8px",
-    overflow: "hidden",
-    margin: "24px 0",
-    borderRadius: "999px",
-    background: "#eceef5",
-  },
-
-  progressValue: {
-    width: "25%",
-    height: "100%",
-    borderRadius: "999px",
-    background:
-      "linear-gradient(90deg,#7448ff,#ec42c7)",
-  },
-
-  tasks: {
-    display: "grid",
-    gap: "10px",
-    marginBottom: "22px",
-  },
-
-  missionItem: {
-    display: "flex",
-    alignItems: "center",
-    gap: "11px",
-    padding: "13px",
-    borderRadius: "12px",
-    background: "#f7f8fc",
-  },
-
-  taskCheck: {
-    width: "20px",
-    height: "20px",
-    display: "grid",
-    placeItems: "center",
-    flexShrink: 0,
-    border: "1px solid #d9ddeb",
-    borderRadius: "7px",
-    color: "#ffffff",
-    fontSize: "11px",
-  },
-
-  taskCheckCompleted: {
-    borderColor: "#7448ff",
-    background: "#7448ff",
-  },
-
-  taskTitle: {
-    flex: 1,
-    color: "#303957",
-    fontSize: "12px",
-    fontWeight: "700",
-  },
-
-  taskDuration: {
-    color: "#969db2",
-    fontSize: "10px",
-  },
-
-  primaryLink: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "13px 19px",
-    borderRadius: "11px",
-    background:
-      "linear-gradient(135deg,#7448ff,#ec42c7)",
-    color: "#ffffff",
-    textDecoration: "none",
-    fontSize: "12px",
-    fontWeight: "900",
-  },
-
-  secondaryLink: {
-    display: "inline-block",
-    marginTop: "23px",
-    color: "#ddd6ff",
-    fontSize: "11px",
-    fontWeight: "700",
-  },
-
-  goalBand: {
-    margin: "9px 0",
-    fontSize: "36px",
-  },
-
-  goalText: {
-    margin: 0,
-    color: "#bdc3df",
-    fontSize: "12px",
-    lineHeight: 1.7,
-  },
-
-  goalDetails: {
-    display: "grid",
-    gap: "15px",
-    marginTop: "24px",
-    paddingTop: "22px",
-    borderTop: "1px solid rgba(255,255,255,.1)",
-  },
-
-  detailLabel: {
-    display: "block",
-    marginBottom: "5px",
-    color: "#818bad",
-    fontSize: "9px",
-    fontWeight: "800",
-    textTransform: "uppercase",
-  },
-
-  detailValue: {
-    fontSize: "12px",
-  },
-};
