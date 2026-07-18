@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -76,6 +76,30 @@ const studyTimeOptions = [
   },
 ];
 
+function normalizeLevel(value) {
+  const allowedLevels = levelOptions.map(
+    (option) => option.value
+  );
+
+  return allowedLevels.includes(value)
+    ? value
+    : "Pre-A1";
+}
+
+function normalizeBand(value) {
+  const parsedValue = Number(value);
+
+  if (
+    Number.isNaN(parsedValue) ||
+    parsedValue < 5 ||
+    parsedValue > 9
+  ) {
+    return "5.0";
+  }
+
+  return parsedValue.toFixed(1);
+}
+
 export default function OnboardingPage() {
   const router = useRouter();
 
@@ -89,13 +113,25 @@ export default function OnboardingPage() {
     useState("Vietnamese");
   const [currentLevel, setCurrentLevel] =
     useState("Pre-A1");
-  const [targetBand, setTargetBand] = useState("7.0");
+  const [targetBand, setTargetBand] =
+    useState("5.0");
   const [examDate, setExamDate] = useState("");
-  const [dailyMinutes, setDailyMinutes] = useState(30);
+  const [dailyMinutes, setDailyMinutes] =
+    useState(30);
 
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] =
     useState("error");
+
+  const displayedLevel = useMemo(
+    () => normalizeLevel(currentLevel),
+    [currentLevel]
+  );
+
+  const displayedBand = useMemo(
+    () => normalizeBand(targetBand),
+    [targetBand]
+  );
 
   useEffect(() => {
     checkSession();
@@ -113,21 +149,31 @@ export default function OnboardingPage() {
 
     const {
       data: { session },
-      error,
+      error: sessionError,
     } = await supabase.auth.getSession();
 
-    if (error || !session) {
+    if (sessionError || !session) {
       router.replace("/auth");
       return;
     }
 
     setUser(session.user);
 
-    const { data: existingProfile } = await supabase
+    const {
+      data: existingProfile,
+      error: profileError,
+    } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", session.user.id)
       .maybeSingle();
+
+    if (profileError) {
+      setMessageType("error");
+      setMessage(profileError.message);
+      setCheckingSession(false);
+      return;
+    }
 
     if (existingProfile?.onboarding_completed) {
       router.replace("/dashboard");
@@ -135,19 +181,35 @@ export default function OnboardingPage() {
     }
 
     if (existingProfile) {
-      setFullName(existingProfile.full_name || "");
+      setFullName(
+        existingProfile.full_name || ""
+      );
+
       setNativeLanguage(
-        existingProfile.native_language || "Vietnamese"
+        existingProfile.native_language ||
+          "Vietnamese"
       );
+
       setCurrentLevel(
-        existingProfile.current_level || "Pre-A1"
+        normalizeLevel(
+          existingProfile.current_level
+        )
       );
+
       setTargetBand(
-        String(existingProfile.target_band || "7.0")
+        normalizeBand(
+          existingProfile.target_band
+        )
       );
-      setExamDate(existingProfile.exam_date || "");
+
+      setExamDate(
+        existingProfile.exam_date || ""
+      );
+
       setDailyMinutes(
-        existingProfile.daily_minutes || 30
+        Number(
+          existingProfile.daily_minutes || 30
+        )
       );
     }
 
@@ -160,17 +222,21 @@ export default function OnboardingPage() {
 
     if (!supabase || !user) {
       setMessageType("error");
-      setMessage("Your login session could not be found.");
+      setMessage(
+        "Your login session could not be found."
+      );
       return;
     }
 
     if (!fullName.trim()) {
       setMessageType("error");
-      setMessage("Please enter your full name.");
+      setMessage(
+        "Please enter your full name."
+      );
       return;
     }
 
-    if (!currentLevel) {
+    if (!displayedLevel) {
       setMessageType("error");
       setMessage(
         "Please select your current English level."
@@ -183,9 +249,10 @@ export default function OnboardingPage() {
     const profileData = {
       id: user.id,
       full_name: fullName.trim(),
-      native_language: nativeLanguage.trim(),
-      current_level: currentLevel,
-      target_band: Number(targetBand),
+      native_language:
+        nativeLanguage.trim() || "Vietnamese",
+      current_level: displayedLevel,
+      target_band: Number(displayedBand),
       exam_date: examDate || null,
       daily_minutes: Number(dailyMinutes),
       onboarding_completed: true,
@@ -206,7 +273,9 @@ export default function OnboardingPage() {
     }
 
     setMessageType("success");
-    setMessage("Your learning profile has been created.");
+    setMessage(
+      "Your learning profile has been created."
+    );
 
     setTimeout(() => {
       router.replace("/dashboard");
@@ -218,6 +287,7 @@ export default function OnboardingPage() {
     return (
       <main style={styles.loadingPage}>
         <div style={styles.loader} />
+
         <p style={styles.loadingText}>
           Preparing your Nexora journey...
         </p>
@@ -245,13 +315,14 @@ export default function OnboardingPage() {
           </div>
 
           <h1 style={styles.title}>
-            Let&apos;s personalize your learning journey
+            Let&apos;s personalize your learning
+            journey
           </h1>
 
           <p style={styles.description}>
-            Nexora will use these details to recommend
-            your starting level, daily plan and IELTS
-            pathway.
+            Nexora will use these details to
+            recommend your starting level, daily
+            plan and IELTS pathway.
           </p>
         </header>
 
@@ -261,7 +332,9 @@ export default function OnboardingPage() {
         >
           <div style={styles.formGrid}>
             <label style={styles.field}>
-              <span style={styles.label}>Full name</span>
+              <span style={styles.label}>
+                Full name
+              </span>
 
               <input
                 type="text"
@@ -284,7 +357,9 @@ export default function OnboardingPage() {
                 type="text"
                 value={nativeLanguage}
                 onChange={(event) =>
-                  setNativeLanguage(event.target.value)
+                  setNativeLanguage(
+                    event.target.value
+                  )
                 }
                 placeholder="Vietnamese"
                 style={styles.input}
@@ -297,9 +372,11 @@ export default function OnboardingPage() {
               </span>
 
               <select
-                value={currentLevel}
+                value={displayedLevel}
                 onChange={(event) =>
-                  setCurrentLevel(event.target.value)
+                  setCurrentLevel(
+                    event.target.value
+                  )
                 }
                 style={styles.input}
               >
@@ -320,9 +397,11 @@ export default function OnboardingPage() {
               </span>
 
               <select
-                value={targetBand}
+                value={displayedBand}
                 onChange={(event) =>
-                  setTargetBand(event.target.value)
+                  setTargetBand(
+                    event.target.value
+                  )
                 }
                 style={styles.input}
               >
@@ -367,37 +446,40 @@ export default function OnboardingPage() {
                 }
                 style={styles.input}
               >
-                {studyTimeOptions.map((option) => (
-                  <option
-                    value={option.value}
-                    key={option.value}
-                  >
-                    {option.label} per day
-                  </option>
-                ))}
+                {studyTimeOptions.map(
+                  (option) => (
+                    <option
+                      value={option.value}
+                      key={option.value}
+                    >
+                      {option.label} per day
+                    </option>
+                  )
+                )}
               </select>
             </label>
           </div>
 
           <div style={styles.planPreview}>
-            <div>
+            <div style={styles.previewContent}>
               <span style={styles.previewLabel}>
                 YOUR INITIAL PLAN
               </span>
 
               <h2 style={styles.previewTitle}>
-                {currentLevel} → IELTS {targetBand}
+                {displayedLevel} → IELTS{" "}
+                {displayedBand}
               </h2>
 
               <p style={styles.previewText}>
-                Study {dailyMinutes} minutes each day
-                through guided lessons, practice and
-                weekly checkpoints.
+                Study {dailyMinutes} minutes each
+                day through guided lessons,
+                practice and weekly checkpoints.
               </p>
             </div>
 
             <div style={styles.levelBadge}>
-              {currentLevel}
+              {displayedLevel}
             </div>
           </div>
 
@@ -420,7 +502,9 @@ export default function OnboardingPage() {
             style={{
               ...styles.submitButton,
               opacity: saving ? 0.7 : 1,
-              cursor: saving ? "wait" : "pointer",
+              cursor: saving
+                ? "wait"
+                : "pointer",
             }}
           >
             {saving
@@ -429,8 +513,9 @@ export default function OnboardingPage() {
           </button>
 
           <p style={styles.privacyText}>
-            Your profile is private and is only used to
-            personalize your Nexora learning experience.
+            Your profile is private and is only
+            used to personalize your Nexora
+            learning experience.
           </p>
         </form>
       </section>
@@ -465,7 +550,8 @@ const styles = {
   loader: {
     width: "42px",
     height: "42px",
-    border: "4px solid rgba(255,255,255,.25)",
+    border:
+      "4px solid rgba(255,255,255,.25)",
     borderTopColor: "#ffffff",
     borderRadius: "50%",
   },
@@ -533,9 +619,11 @@ const styles = {
     display: "inline-block",
     marginBottom: "17px",
     padding: "8px 14px",
-    border: "1px solid rgba(255,255,255,.15)",
+    border:
+      "1px solid rgba(255,255,255,.15)",
     borderRadius: "999px",
-    background: "rgba(255,255,255,.08)",
+    background:
+      "rgba(255,255,255,.08)",
     color: "#dfd9ff",
     fontSize: "10px",
     fontWeight: "800",
@@ -545,7 +633,8 @@ const styles = {
   title: {
     margin: "0 0 14px",
     color: "#ffffff",
-    fontSize: "clamp(32px, 5vw, 49px)",
+    fontSize:
+      "clamp(32px, 5vw, 49px)",
     lineHeight: 1.08,
   },
 
@@ -559,10 +648,13 @@ const styles = {
 
   formCard: {
     padding: "34px",
-    border: "1px solid rgba(255,255,255,.7)",
+    border:
+      "1px solid rgba(255,255,255,.7)",
     borderRadius: "27px",
-    background: "rgba(255,255,255,.98)",
-    boxShadow: "0 30px 90px rgba(0,0,0,.32)",
+    background:
+      "rgba(255,255,255,.98)",
+    boxShadow:
+      "0 30px 90px rgba(0,0,0,.32)",
   },
 
   formGrid: {
@@ -587,7 +679,8 @@ const styles = {
     width: "100%",
     boxSizing: "border-box",
     padding: "14px",
-    border: "1px solid #dfe3ee",
+    border:
+      "1px solid #dfe3ee",
     borderRadius: "12px",
     background: "#ffffff",
     color: "#222c4b",
@@ -612,6 +705,11 @@ const styles = {
       "linear-gradient(135deg, #f3f0ff, #fff1fb)",
   },
 
+  previewContent: {
+    minWidth: 0,
+    flex: 1,
+  },
+
   previewLabel: {
     color: "#7a55e7",
     fontSize: "9px",
@@ -623,6 +721,7 @@ const styles = {
     margin: "7px 0",
     color: "#172452",
     fontSize: "22px",
+    lineHeight: 1.3,
   },
 
   previewText: {
@@ -634,16 +733,20 @@ const styles = {
   },
 
   levelBadge: {
-    minWidth: "72px",
+    minWidth: "88px",
     height: "72px",
     display: "grid",
     placeItems: "center",
+    flexShrink: 0,
+    padding: "0 14px",
+    boxSizing: "border-box",
     borderRadius: "20px",
     background:
       "linear-gradient(135deg, #7448ff, #ec42c7)",
     color: "#ffffff",
-    fontSize: "18px",
+    fontSize: "15px",
     fontWeight: "900",
+    textAlign: "center",
     boxShadow:
       "0 12px 28px rgba(116,72,255,.28)",
   },
