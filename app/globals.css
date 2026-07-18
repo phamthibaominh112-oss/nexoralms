@@ -88,3 +88,14 @@ footer{max-width:1180px;margin:auto;padding:32px 0;display:flex;align-items:cent
   .pricingSection{gap:40px}.priceCard{padding:25px}
   footer{flex-direction:column;gap:18px;text-align:center}footer>div:last-child{justify-content:center}
 }
+.navLinks .primaryButton,
+.navLinks a.primaryButton,
+.primaryButton {
+  color: #ffffff !important;
+  text-decoration: none;
+}
+
+.navLinks .primaryButton:hover,
+.navLinks a.primaryButton:hover {
+  color: #ffffff !important;
+}
