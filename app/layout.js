@@ -1,25 +1,20 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Nexora | Road to IELTS 8.0",
-  description: "A complete, gamified English learning roadmap from zero to IELTS 8.0."
-};
-
-export default function RootLayout({ children }) {
-  return (
-    <html lang="vi">
-      <body>{children}</body>
-    </html>
-  );
-}
-import "./globals.css";
-
-export const metadata = {
-  title: "Nexora | Road to IELTS 8.0",
-  description: "Road to IELTS 8.0",
+  title: {
+    default: "Nexora | Road to IELTS 8.0",
+    template: "%s | Nexora",
+  },
+  description:
+    "Build your English skills through 100 guided levels and reach IELTS Band 8.0 with Nexora.",
 
   icons: {
-    icon: "/favicon.jpeg",
+    icon: [
+      {
+        url: "/favicon.jpeg",
+        type: "image/jpeg",
+      },
+    ],
     shortcut: "/favicon.jpeg",
     apple: "/favicon.jpeg",
   },
