@@ -76,7 +76,7 @@ export default function AuthPage() {
         setMessage("Signed in successfully.");
 
         setTimeout(() => {
-          router.push("/dashboard");
+          router.push("/onboarding");
           router.refresh();
         }, 500);
       }
