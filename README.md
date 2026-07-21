@@ -1,65 +1,87 @@
-# Nexora V3 Gamified
+# Nexora V5 LMS
 
-A gamified bilingual LMS scaffold with:
+V5 changes Nexora from a learner demo into a two-sided learning management system.
 
-- Nexora mascot: **Nori**
-- Placement test and recommended starting level
-- 100-level roadmap
-- Rich learning blocks
-- Flappy Quiz game: every three gates triggers a knowledge question
-- IELTS computer-based practice shell
-- Normalized Supabase database
-- JSON import format for lessons and IELTS papers
-- XP, coins, hearts, streaks, badges, quests and game sessions
-- English/Vietnamese UI
-- Browser audio fallback and real audio URL support
+## Learner Portal
 
-## Setup
+- Dashboard, roadmap and interactive lessons
+- Placement test
+- IELTS test engine
+- Games and achievements
+- Assignment submission data model
+- Learner Support page
+- Questions, content feedback and technical tickets
+- Replies from the academic/admin team
 
-1. Copy `.env.example` to `.env.local`
-2. Add Supabase URL and publishable key
-3. Run database SQL in order
-4. `npm install`
-5. `npm run dev`
+## Admin Workspace
 
-## Import content
+Routes:
 
-Use:
-- `content/examples/lesson.sample.json`
-- `content/examples/ielts-paper.sample.json`
-
-The database includes RPC functions:
-- `import_lesson_json(jsonb)`
-- `import_ielts_paper_json(jsonb)`
-
-Use Supabase SQL Editor:
-
-```sql
-select public.import_lesson_json('<JSON>'::jsonb);
-select public.import_ielts_paper_json('<JSON>'::jsonb);
+```text
+/admin
+/admin/courses
+/admin/questions
+/admin/assignments
+/admin/users
+/admin/helpdesk
+/admin/ielts
 ```
 
+Admin capabilities:
 
-## V3.1 fixes
+- LMS operations dashboard
+- Create and manage courses
+- Author reusable question-bank items
+- Create assignments
+- Review learner accounts and roles
+- View learner questions and feedback
+- Reply through Helpdesk
+- Import and publish IELTS test suites
 
-- Correct multi-select scoring using set equality
-- Correct options are revealed after checking
-- Flappy Bird replaced with animated Nori
-- Varied, continuously generated gates
-- 40-question four-skill placement matrix
-- Full 40-item Reading and Listening mock structures
-- Persistent top-bar sign-out button
-- Nexora favicon
-- Question-bank setup guide and placement blueprint SQL
+## Branding
 
+The uploaded Nexora logo is used as:
 
-## V3.3 Admin Test Studio
+- Main application logo
+- Sidebar logo
+- Browser favicon
+- Apple touch icon
 
-- Role-protected `/admin/ielts`
-- Admin/founder-only bundle import
-- Draft/review/published/archive workflow
-- Publishing validation for answer keys and Listening audio
-- Published test library on `/ielts`
-- Converted OSIR ACA 1 bundle with Reading 40, Listening 40, Writing and Speaking
-- Source DOCX retained under `content/source`
-- Admin promotion SQL and complete guide
+Nori has been redesigned as a modern AI/robot learning companion.
+
+## Supabase setup
+
+Run:
+
+```text
+supabase/migrations/001_nexora_v4.sql
+supabase/migrations/002_lms_admin.sql
+supabase/seed/001_seed.sql
+```
+
+Then edit and run:
+
+```text
+supabase/promote_admin.sql
+```
+
+## Environment variables
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_xxxxx
+```
+
+`NEXT_PUBLIC_SUPABASE_ANON_KEY` remains supported as a fallback.
+
+## Deploy
+
+```bash
+npm install
+npm run build
+git add .
+git commit -m "Launch Nexora V5 LMS"
+git push
+```
+
+Redeploy on Vercel without using the previous build cache.

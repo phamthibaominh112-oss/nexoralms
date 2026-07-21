@@ -90,6 +90,23 @@ export default function AdminIELTSPage() {
     }
   }
 
+  async function loadOsirReading() {
+    setBusy(true);
+    setMessage("");
+
+    try {
+      const response = await fetch("/imports/osir_aca_1_reading.json");
+      if (!response.ok) throw new Error("Could not load OSIR Reading JSON.");
+      const payload = await response.json();
+      setJsonText(JSON.stringify(payload, null, 2));
+      setMessage("OSIR ACA 1 Reading loaded: 3 passages, 40 questions and answer key.");
+    } catch (error) {
+      setMessage(error.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function importBundle() {
     if (!supabase) {
       setMessage("Supabase is not configured.");
@@ -105,8 +122,8 @@ export default function AdminIELTSPage() {
       return;
     }
 
-    if (!payload?.suite || !Array.isArray(payload?.papers)) {
-      setMessage("The file must contain a suite object and a papers array.");
+    if (!payload?.suite || (!payload?.paper && !Array.isArray(payload?.papers))) {
+      setMessage("The file must contain a suite object and either paper or papers[].");
       return;
     }
 
@@ -252,6 +269,13 @@ export default function AdminIELTSPage() {
               disabled={busy}
             >
               Load OSIR ACA 1
+            </button>
+            <button
+              className="secondary"
+              onClick={loadOsirReading}
+              disabled={busy}
+            >
+              Load Reading JSON
             </button>
           </div>
 

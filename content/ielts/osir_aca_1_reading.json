@@ -1,0 +1,387 @@
+{
+  "suite": {
+    "slug": "osir-aca-1-reading",
+    "title": "OSIR ACA 1 — Academic Reading",
+    "type": "academic",
+    "module": "reading",
+    "status": "draft",
+    "duration_minutes": 60,
+    "total_questions": 40,
+    "source_file": "OSIR ACA 1 TEST REVISED - on going(1).docx",
+    "answer_key_file": "OSIR TEST 1 - ACA Reading - Listening KEY(1).pdf"
+  },
+  "paper": {
+    "title": "OSIR ACA 1 — Academic Reading",
+    "instructions": "You should spend about 60 minutes on Questions 1–40.",
+    "sections": [
+      {
+        "section_number": 1,
+        "title": "Reading Passage 1 — The Great Divide",
+        "recommended_minutes": 20,
+        "passage": "The Rocky Mountains mark a geographical divide in North America.\n\nOver one-third of the state of Colorado is public property, a boundless wilderness with some of the finest mountain scenery in North America. The backbone of the state, indeed, of the whole continent, is the Rocky Mountains, which stretch some 2,700 miles from Alaska to Mexico. The present mountains were formed by the great forces of plate tectonics 70 million years ago, when the dinosaurs still roamed the earth. In fact, they are the third set of Rocky Mountains: two earlier and much older formations were thrust skywards and then eroded over many tens of millions of years. They say it's possible to cross the continental divide eleven times when journeying north to south through Colorado. This continental divide is the geographical watershed that separates the rivers that flow to the Pacific Ocean in the west from those that flow, ultimately, to the Atlantic in the east.\n\nTwo hours north of Denver is Estes Park, an impressive 7,522 feet above sea level and the entry point for Rocky Mountain National Park. Although Rocky Mountain National Park is only one-ninth the size of the better-known Yellowstone, it receives roughly the same number of visitors. Nevertheless, it is not difficult to find oneself in virtual solitude, even on some of the easier trails leading off from the road.\n\nThere are three distinct ecosystems in the park, delineated by altitude. The highest is the alpine tundra above the tree line between 11,500 feet and 14,000 feet. Here, small, waxy-leaved plants are adapted to the fierce drying winds, bitter cold, and intense UV-rich sunlight. Below comes the sub-alpine area with its wind-driven huckleberry and juniper shrubs. The lowest is the montane region, with its tall ponderosa and wispy aspen cloaked in shimmering, summer-green foliage. The overpowering scent is from older ponderosa, which develops a cinnamon-red bark that warms in the sunshine to fill the air with fragrance.\n\nBreathlessness is a problem in Colorado's mountains, and not just because of the magnificence of the landscape. The highest peak in the entire Rockies is Colorado's Mount Elbert, at 14,440 feet. In Rocky Mountain National Park, the highest peak is Longs Peak at 14,259 feet. Even at the 'lower' altitudes, anyone coming from sea level will soon feel the effects: fatigue, shortness of breath, headaches, and a raking thirst.\n\nOutside the city of Colorado Springs, it is possible to see the curiously shaped remnants of the Rockies' ancient geology in the form of a stunning rock formation in a city park called the Garden of the Gods. Some of these rocks date back 300 million years to the time of the first formation: the Ancient Rocky Mountains. Over a period of many hundreds of thousands of years, the red rocks here have formed vertical stone pillars that bear witness to the tortuously slow processes of geological time.\n\nThe drive from Colorado Springs to the mountain resort of Vail is a classic crossing of the continental divide. Vail is no anti-climax; it was built in the 1960s as a skiing destination in a mix of European Alpine styles and continues to draw the crowd to its slopes. The journey back to Denver is long, and because the roads are so good, it is easy to cover distances that would have taken days or weeks when these mountains were first explored by Europeans.\n\nLess than an hour's drive away from Denver, standing amid the 'flatirons' rocks 5,430 feet above sea level, Boulder is like no other town in Colorado or even America. It is said to be the cleverest place in the US, home to a major university, the University of Colorado at Boulder, and a clutch of government research centres, such as the National Center for Atmospheric Research and the National Oceanic and Atmospheric Administration. It also has a decidedly 'alternative' edge, exemplified by Pearl Street, which is bathed in seemingly perpetual sunshine. There are few other places in Colorado—or in the US—where you can watch street performers play practically every instrument imaginable, from the didgeridoo to the classical violin. The stately Boulderado Hotel dates back to 1909 and has retained the atmosphere of pre-Space-Age America. Musician Louis Armstrong once stayed here at the height of the jazz era, and even though the stained glass ceiling of the hotel's main hall is a replica of the real thing, the mood is still authentically retro.\n\nBoulder seems to stir mixed emotions among native Coloradans. People outside Boulder refer to it as being in a bubble of its own. Those who live there talk half-seriously of the 'People's Republic of Boulder', somewhere that is self-consciously liberal, especially in comparison with more conservative-minded places lower down on the plains.",
+        "question_groups": [
+          {
+            "range": "1-6",
+            "type": "table_completion",
+            "instructions": "Complete the form below. Choose NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage for each answer.",
+            "questions": [
+              {
+                "number": 1,
+                "prompt": "Estes Park: _______ feet",
+                "answer": [
+                  "7,522",
+                  "7522"
+                ]
+              },
+              {
+                "number": 2,
+                "prompt": "Rocky Mountain National Park attracts as many visitors as the much larger _______.",
+                "answer": [
+                  "Yellowstone"
+                ]
+              },
+              {
+                "number": 3,
+                "prompt": "Plants are adapted to the sun and strong _______.",
+                "answer": [
+                  "winds"
+                ]
+              },
+              {
+                "number": 4,
+                "prompt": "The montane region contains fragrant _______.",
+                "answer": [
+                  "ponderosa"
+                ]
+              },
+              {
+                "number": 5,
+                "prompt": "_______ is 14,440 feet high.",
+                "answer": [
+                  "Mount Elbert"
+                ]
+              },
+              {
+                "number": 6,
+                "prompt": "Ancient rocks in the Garden of the Gods have taken the shape of _______.",
+                "answer": [
+                  "pillars"
+                ]
+              }
+            ]
+          },
+          {
+            "range": "7-13",
+            "type": "yes_no_not_given",
+            "instructions": "Write YES if the statement agrees, NO if it contradicts, or NOT GIVEN if there is no information.",
+            "questions": [
+              {
+                "number": 7,
+                "prompt": "Vail still serves the purpose for which it was established.",
+                "options": [
+                  "YES",
+                  "NO",
+                  "NOT GIVEN"
+                ],
+                "answer": "YES"
+              },
+              {
+                "number": 8,
+                "prompt": "Early European explorers were reluctant to make the journey between Vail and Denver.",
+                "options": [
+                  "YES",
+                  "NO",
+                  "NOT GIVEN"
+                ],
+                "answer": "NOT GIVEN"
+              },
+              {
+                "number": 9,
+                "prompt": "Boulder is known as a place for academics.",
+                "options": [
+                  "YES",
+                  "NO",
+                  "NOT GIVEN"
+                ],
+                "answer": "YES"
+              },
+              {
+                "number": 10,
+                "prompt": "The National Center for Atmospheric Research collaborates on projects with the University of Colorado.",
+                "options": [
+                  "YES",
+                  "NO",
+                  "NOT GIVEN"
+                ],
+                "answer": "NOT GIVEN"
+              },
+              {
+                "number": 11,
+                "prompt": "The street entertainment in Boulder is typical of cities in Colorado.",
+                "options": [
+                  "YES",
+                  "NO",
+                  "NOT GIVEN"
+                ],
+                "answer": "NO"
+              },
+              {
+                "number": 12,
+                "prompt": "The Boulderado Hotel retains its original ceiling.",
+                "options": [
+                  "YES",
+                  "NO",
+                  "NOT GIVEN"
+                ],
+                "answer": "NO"
+              },
+              {
+                "number": 13,
+                "prompt": "Boulder is considered by its inhabitants to be different from other cities in the state.",
+                "options": [
+                  "YES",
+                  "NO",
+                  "NOT GIVEN"
+                ],
+                "answer": "YES"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "section_number": 2,
+        "title": "Reading Passage 2 — Edward Hopper",
+        "recommended_minutes": 20,
+        "passage": "Edward Hopper is widely acknowledged to have been the most important realist painter of twentieth-century America. However, it has been said that his vision of reality was a selective one, reflecting his own temperament in the empty cityscapes, landscapes, and isolated figures he painted. His work demonstrates that realism is not merely a literal or photographic copying of what we see, but an interpretive rendering.\n\nBorn in a small town outside New York City, Hopper began drawing at a young age. His parents recognised his talent and encouraged him to go to art school. As a young man Hopper worked as a commercial illustrator, studied art in Europe and worked in an artists' colony, where he met and married Josephine Nivison who became his only female model. Hopper made several trips to France as a young man and it was there that he studied the work of Edgar Degas, an artist known for his paintings of ballet dancers. Some of Hopper's paintings display techniques he learnt while studying Degas. Both artists captured fleeting moments when people were absorbed in activities.\n\nDuring his 84 years, Edward Hopper witnessed dramatic changes in the American way of life. He lived through the Great Depression and the period of economic prosperity that followed. He watched as new technology transformed daily life. In his paintings, Hopper created a visual record of everyday life in the changing country. There is something strangely familiar in his work as if the viewer had been there to witness each scene. But on closer observation, there is something unsettling about his paintings. Hopper partly achieved this tense quality through his representation of light. Whether exploring the isolation of life in the city or the quiet countryside, Hopper used light to reflect his vision of American life.\n\nThe people who inhabit Hopper's paintings often appear to be lost in thought. Hopper rarely discussed the symbolism in his paintings. But today, many art historians believe that, intentionally or not, his paintings are deeply emotional portraits of individuals in society. His interiors, especially, with their artificial light and strategic compositions, seem to emphasise his subjects' inner lives.\n\nHopper said that art should be 'fact seen through a personality' and the mood in the artist's work reflects his introverted, quiet disposition. In his 1942 painting Nighthawks, Hopper reminds viewers that, even in a crowded city, where you are never totally alone, you might feel lonely. The artificial light in the interior of the diner creates an inviting glow, contrasting with the dark, deserted street. The figures in the painting do not interact with one another. 'Unconsciously,' Hopper said, 'probably I was painting the loneliness of the large city.'\n\nHopper once said, 'There is a sort of elation about sunlight on the upper part of a house.' The way light hits a building, the forms and shadows it creates, are the keys to his artistic style. Hopper developed his compositions like puzzles, trying out the pieces until they made sense. He varied elements in his painting, from the stage in the day to the direction of the light, to set the mood.\n\nThe Hoppers bought their first car in 1927 and took many road trips in the years that followed. Hopper also took to the road when looking for inspiration for works like his 1940 work, Gas. The artist had several real gas stations in mind when he composed this painting and incorporated elements of each to create a composite image. In this painting, Hopper renders both natural and artificial light. The last remnants of sunlight catch on wispy white clouds, and electric lights inside the building cast long shadows across the parking lot and illuminate the man's head. The deepest shadows appear in the background, where the road disappears into the dark trees. The road is painted on a diagonal line, moving the viewer's eye through the scene, past the gas station, into the unknown down the road.\n\nIn 1933, Hopper and his wife, Jo, bought a property on Cape Cod, a popular vacation destination on the coast of Massachusetts in the US. They spent almost every summer there. The artist preferred to spend time in the country, away from the noise, crowds, and other distractions of modern city life. In his 1939 painting Cape Cod Evening, Hopper divides the scene into simple geometric shapes. He fills the lower half of the composition with grasses, which he observed just outside his studio window. He juxtaposes the grasses, painted with soft earth tones, with the cool blue trees, rendered in a square. Golden light shines on the grass and houses, but the trees seem foreboding. The use of colour and light creates a feeling of unease, like the calm before a storm.\n\nHopper's work has continued to inspire countless artists. In particular, many have reimagined Nighthawks, his most famous painting. Film director Alfred Hitchcock based the creepy house in his 1960 thriller Psycho on Hopper's painting House by the Railroad. Today, Hopper is considered one of the most important artists in American history.",
+        "question_groups": [
+          {
+            "range": "14-20",
+            "type": "short_answer",
+            "instructions": "Answer the questions below. Choose NO MORE THAN THREE WORDS from the passage for each answer.",
+            "questions": [
+              {
+                "number": 14,
+                "prompt": "In what style of art did Edward Hopper paint?",
+                "answer": [
+                  "realist",
+                  "realism"
+                ]
+              },
+              {
+                "number": 15,
+                "prompt": "Where did Hopper's parents send him when he was young?",
+                "answer": [
+                  "art school",
+                  "to art school"
+                ]
+              },
+              {
+                "number": 16,
+                "prompt": "Where did Hopper meet his wife?",
+                "answer": [
+                  "artists' colony",
+                  "an artists' colony"
+                ]
+              },
+              {
+                "number": 17,
+                "prompt": "What did Hopper see that changed everyday life?",
+                "answer": [
+                  "technology"
+                ]
+              },
+              {
+                "number": 18,
+                "prompt": "What does Hopper use to achieve a sense of tension in his paintings?",
+                "answer": [
+                  "light"
+                ]
+              },
+              {
+                "number": 19,
+                "prompt": "What aspect of his painting did Hopper seldom talk about?",
+                "answer": [
+                  "symbolism"
+                ]
+              },
+              {
+                "number": 20,
+                "prompt": "What do many art historians think that Hopper's paintings represented?",
+                "answer": [
+                  "individuals in society"
+                ]
+              }
+            ]
+          },
+          {
+            "range": "21-25",
+            "type": "matching_sentence_endings",
+            "instructions": "Complete each sentence with the correct ending, A-G.",
+            "options": {
+              "A": "showed something he could see from where he was working.",
+              "B": "influenced artists working in various media.",
+              "C": "established a contrast between the light inside and the lack of light outside.",
+              "D": "used ideas from a combination of sources to achieve the final result.",
+              "E": "gave the impression of optimism about the future.",
+              "F": "conveyed a sense of what the people in his paintings are thinking about.",
+              "G": "tried to show a new way of looking at the American landscape."
+            },
+            "questions": [
+              {
+                "number": 21,
+                "prompt": "Hopper's paintings of scenes indoors ...",
+                "answer": "F"
+              },
+              {
+                "number": 22,
+                "prompt": "In his well-known painting Nighthawks, Hopper ...",
+                "answer": "C"
+              },
+              {
+                "number": 23,
+                "prompt": "In Gas, a painting inspired by a road trip, Hopper ...",
+                "answer": "D"
+              },
+              {
+                "number": 24,
+                "prompt": "Hopper's painting Cape Cod Evening ...",
+                "answer": "A"
+              },
+              {
+                "number": 25,
+                "prompt": "More than any of Hopper's other paintings, Nighthawks has ...",
+                "answer": "B"
+              }
+            ]
+          },
+          {
+            "range": "26-27",
+            "type": "multi_select_shared",
+            "instructions": "Choose TWO letters, A-E. Answers may be given in any order.",
+            "prompt": "How did Hopper develop his compositions?",
+            "options": {
+              "A": "He produced detailed sketches as a starting point.",
+              "B": "He experimented with different ideas until the painting fitted together.",
+              "C": "He used shade on the most important parts of the painting.",
+              "D": "He altered the point in time at which the scene took place.",
+              "E": "He kept a travel journal for ideas for paintings."
+            },
+            "questions": [
+              {
+                "number": 26,
+                "answer": [
+                  "B",
+                  "D"
+                ],
+                "order_sensitive": false
+              },
+              {
+                "number": 27,
+                "answer": [
+                  "B",
+                  "D"
+                ],
+                "order_sensitive": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "section_number": 3,
+        "title": "Reading Passage 3 — Animal Extinction",
+        "recommended_minutes": 20,
+        "passage": "A  Scientists recognise that species continually disappear at a background extinction rate estimated at about one species per million per year, with new species replacing the lost in a sustainable fashion. From what we understand so far, five great extinction events have reshaped Earth in cataclysmic ways in the past 439 million years, each one wiping out between 50 and 95 percent of the life of the day, including the dominant life forms. New species emerged, but an analysis shows that it takes 10 million years before biological diversity begins to approach what existed before an extinction.\n\nB  Today we're living through the sixth great extinction, sometimes known as the Holocene event. This began 50,000 years ago as humans migrated beyond Africa with Stone Age blades, darts, and harpoons, entering pristine Ice Age ecosystems and changing them forever by wiping out at least some of the unique megafauna of the time, including the sabre-toothed cats and woolly mammoths. As harmful as our forebears may have been, nothing compares to what is occurring today. Throughout the 20th century, the causes of extinction - habitat degradation, overexploitation, agricultural monocultures, human-borne invasive species, and human-induced climate change - increased exponentially.\n\nMost of us think of extinction as the plight of the rhino, tiger, panda, or blue whale. But these sagas are only small pieces of the extinction puzzle. Of the 40,168 species that the 10,000 scientists in the World Conservation Union have assessed, one in four mammals, one in eight birds, one in three amphibians, one in three conifers, and other gymnosperms are at risk of extinction. By the most conservative measure - based on the last century's recorded extinctions - the current rate of extinction is 100 times the background rate. But Harvard biologist Edward O Wilson estimates that the true rate is more like 1,000 to 10,000 times the background rate.\n\nC  A poll by the American Museum of Natural History found that seven in 10 biologists believe that mass extinction poses a colossal threat to human existence and that the dangers of mass extinction are woefully underestimated by almost everyone outside science. In the 200 years since French naturalist Georges Cuvier first floated the concept of extinction, after examining fossil bones and finding the existence of a world previous to ours, destroyed by some sort of catastrophe, we have only slowly attempted to correct our own catastrophic behaviour.\n\nD  There are a few heartening examples of so-called Lazarus species lost and then found: the Wollemi Pine and the Mahogany Glider in Australia, the Jerdon's Courser in India, the Takahe in New Zealand, and the Ivory-billed Woodpecker in the United States have all made a comeback. But virtually all other 'lost' species work their way down the listings from secure to vulnerable, to endangered, to critically endangered, and to extinct.\n\nE  Biodiversity is the sum of an area's genes, species, and ecosystems. The richer an area's biodiversity, the tougher its immune system, since biodiversity includes not only the number of species but also the number of individuals within that species.\n\nYet it's a mistake to think that critical biodiverse genetic pools exist only in the gaudy show of the coral reefs or the rainforest. Although a hallmark of the desert is sparseness, this is only an illusion. Turn the desert inside out and you'll discover life goes underground in a tangled exuberance of roots and burrows reminiscent of a rainforest canopy, but competing for moisture instead of light. Coyotes dig and maintain wells, probing deep for water. White-winged doves drink enough when the opportunity arises to increase their body weight by more than 15 per cent. Black-tailed jackrabbits tolerate internal temperatures of 111°F.\n\nF  Losing even one species irrevocably changes the desert as we know it. Nowhere is this better proven than in a study conducted in the Chihuahuan desert by James H Brown and Edward Heske of the University of New Mexico. When a kangaroo-rat group of species was removed, shrublands quickly converted to grasslands, which supported fewer annual plants, which in turn supported fewer birds. Extinctions lead to co-extinctions because most living things on Earth have a few dependent species, while keystone species influence and support myriad plants and animals.\n\nIn a 2004 analysis, Lian Pin Koh predicted that an initially modest co-extinction rate would climb alarmingly as host extinctions rose. Graphed out, the forecast mirrors the rising curve of an infectious epidemic, with the human species acting on all the parts: the germ or cause of the problem, the vector or way it is transmitted, and, ultimately, one of up to 100 million victims.\n\nG  Many biologists believe rewilding is the best hope for arresting the sixth great extinction. What we've done until now - protecting pretty landscapes through attempts at sustainable development, community-based conservation, and ecosystem management - will not preserve biodiversity through the critical next century. By then, half of all species will be lost, by Wilson's calculation. Only 'mega preserves', large conservation areas - modelled on a deep scientific understanding of what the ecosystem needs, will be effective. More than 150 years ago, Henry David Thoreau wrote: 'In wildness is the preservation of the world'. This, science finally understands.",
+        "question_groups": [
+          {
+            "range": "28-35",
+            "type": "matching_information",
+            "instructions": "Which section contains the following information? Write the correct letter, A-G. You may use any letter more than once.",
+            "questions": [
+              {
+                "number": 28,
+                "prompt": "a reference to a correlation between human activity and extinction",
+                "answer": "B"
+              },
+              {
+                "number": 29,
+                "prompt": "examples of survival in a place that is not thought of as an animal habitat",
+                "answer": "E"
+              },
+              {
+                "number": 30,
+                "prompt": "an argument that many different species may rely on a single species",
+                "answer": "F"
+              },
+              {
+                "number": 31,
+                "prompt": "examples of species that were endangered and have since increased in numbers",
+                "answer": "D"
+              },
+              {
+                "number": 32,
+                "prompt": "details of periods of extinctions before the one Earth is currently experiencing",
+                "answer": "A"
+              },
+              {
+                "number": 33,
+                "prompt": "a mention of scientists' opinion of public perception",
+                "answer": "C"
+              },
+              {
+                "number": 34,
+                "prompt": "a reference to a possible solution to the loss of species",
+                "answer": "G"
+              },
+              {
+                "number": 35,
+                "prompt": "a comparison between species loss and a rapidly spreading disease",
+                "answer": "F"
+              }
+            ]
+          },
+          {
+            "range": "36-40",
+            "type": "matching_researchers",
+            "instructions": "Match each statement with the correct researcher, A-E.",
+            "options": {
+              "A": "Edward O Wilson",
+              "B": "Georges Cuvier",
+              "C": "James H Brown and Edward Heske",
+              "D": "Lian Pin Koh",
+              "E": "Henry David Thoreau"
+            },
+            "questions": [
+              {
+                "number": 36,
+                "prompt": "The loss of a certain animal had an impact on plants and other animals.",
+                "answer": "C"
+              },
+              {
+                "number": 37,
+                "prompt": "The increase in extinction is much greater than what has been reported.",
+                "answer": "A"
+              },
+              {
+                "number": 38,
+                "prompt": "Extinction of dependent species will begin slowly and then accelerate.",
+                "answer": "D"
+              },
+              {
+                "number": 39,
+                "prompt": "Untamed areas are the key to saving the planet.",
+                "answer": "E"
+              },
+              {
+                "number": 40,
+                "prompt": "Evidence showed what was present in the world before a large-scale disaster.",
+                "answer": "B"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

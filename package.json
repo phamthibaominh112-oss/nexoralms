@@ -1,6 +1,6 @@
 {
-  "name": "nexora-v3-3-admin-test-studio",
-  "version": "3.3.0",
+  "name": "nexora-v5-lms",
+  "version": "5.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",

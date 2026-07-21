@@ -327,3 +327,5 @@
     letter-spacing: 2px;
   }
 }
+
+.brandMark{background-image:url("/nexora-logo.png")!important;background-size:cover!important;background-position:center!important;color:transparent!important;overflow:hidden}
