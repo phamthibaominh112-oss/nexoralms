@@ -1,3 +1,16 @@
 "use client";
-import{useEffect,useMemo,useState}from"react";import Link from"next/link";import{Lock,Check,ArrowRight}from"lucide-react";import AppShell from"@/components/AppShell";import{useAuth}from"@/components/AuthProvider";import{useLanguage}from"@/components/LanguageProvider";import{getLessonSummaries}from"@/lib/data";import styles from"./roadmap.module.css";
-export default function RoadmapPage(){const{profile}=useAuth(),{t,localize}=useLanguage();const[lessons,setLessons]=useState([]),current=Number(profile?.current_lesson||1);useEffect(()=>{getLessonSummaries().then(r=>setLessons(r.data))},[]);const stages=useMemo(()=>Array.from({length:10},(_,i)=>({n:i+1,lessons:lessons.filter(l=>l.stage_number===i+1)})),[lessons]);return <AppShell><header className={styles.header}><p className="eyebrow">{t("roadmap")}</p><h1>{t("roadmapTitle")}</h1></header><div className={styles.list}>{stages.map(s=><section key={s.n} className={`card ${styles.stage}`}><div className={styles.head}><div><span>STAGE {s.n}</span><h2>{s.lessons[0]?.stage_name||`Stage ${s.n}`}</h2></div><strong>{s.lessons[0]?.cefr_level}</strong></div><div className={styles.grid}>{s.lessons.map(l=>{const done=l.level_number<current,locked=l.level_number>current;const inside=<><span className={styles.num}>{done?<Check size={17}/>:locked?<Lock size={15}/>:l.level_number}</span><div><strong>{localize(l,"title")}</strong><small>{l.estimated_minutes} min · +{l.xp_reward} XP</small></div>{!locked&&<ArrowRight size={16}/>}</>;return locked?<div key={l.id} className={`${styles.level} ${styles.locked}`}>{inside}</div>:<Link key={l.id} href={`/level/${l.level_number}`} className={`${styles.level} ${done?styles.done:styles.current}`}>{inside}</Link>})}</div></section>)}</div></AppShell>}
+import{useEffect,useState}from"react";
+import Link from"next/link";
+import{Lock,Check,Gamepad2}from"lucide-react";
+import AppShell from"@/components/AppShell";
+import{useAuth}from"@/components/AuthProvider";
+import{useLanguage}from"@/components/LanguageProvider";
+import{getLessons}from"@/lib/data";
+import styles from"./roadmap.module.css";
+
+export default function Roadmap(){
+  const[lessons,setLessons]=useState([]),{profile}=useAuth(),{language}=useLanguage(),vi=language==="vi";
+  const current=Number(profile?.current_lesson||1);
+  useEffect(()=>{getLessons().then(setLessons)},[]);
+  return <AppShell><header className={styles.header}><p className="eyebrow">{vi?"LỘ TRÌNH 100 LEVEL":"100-LEVEL ROADMAP"}</p><h1>{vi?"Mỗi chặng là một cuộc phiêu lưu":"Every stage is an adventure"}</h1></header><div className={styles.path}>{lessons.map(l=>{const locked=l.level_number>current,done=l.level_number<current,boss=l.level_number%10===0;const inner=<><span className={`${styles.node} ${boss?styles.boss:""}`}>{done?<Check/>:locked?<Lock/>:boss?<Gamepad2/>:l.level_number}</span><div><small>{l.cefr_level} · {l.stage_name}</small><strong>{vi?(l.title_vi||l.title):l.title}</strong><p>{vi?(l.subtitle_vi||l.subtitle):l.subtitle}</p></div></>;return locked?<article key={l.id} className={`${styles.level} ${styles.locked}`}>{inner}</article>:<Link key={l.id} href={`/level/${l.level_number}`} className={`${styles.level} ${done?styles.done:styles.current}`}>{inner}</Link>})}</div></AppShell>
+}

@@ -1,0 +1,110 @@
+{
+  "course": {
+    "slug": "road-to-ielts-8",
+    "title": "Road to IELTS 8.0",
+    "title_vi": "Lộ trình IELTS 8.0",
+    "description": "Gamified English programme",
+    "description_vi": "Chương trình tiếng Anh game hóa"
+  },
+  "lesson": {
+    "level_number": 1,
+    "slug": "level-1",
+    "title": "Mission 1: Introduce Yourself",
+    "title_vi": "Nhiệm vụ 1: Giới thiệu bản thân",
+    "subtitle": "A 40-minute interactive mission.",
+    "subtitle_vi": "Nhiệm vụ tương tác 40 phút.",
+    "stage_number": 1,
+    "stage_name": "Starter Foundations",
+    "cefr_level": "Pre-A1",
+    "xp_reward": 100,
+    "coin_reward": 20,
+    "estimated_minutes": 40,
+    "is_checkpoint": false
+  },
+  "blocks": [
+    {
+      "type": "mission_brief",
+      "title": "Mission brief",
+      "title_vi": "Mục tiêu nhiệm vụ",
+      "content": {
+        "objectives": [
+          "Introduce yourself",
+          "Use am/is/are",
+          "Understand personal details"
+        ]
+      }
+    },
+    {
+      "type": "flashcards",
+      "title": "Vocabulary power-up",
+      "title_vi": "Tăng sức mạnh từ vựng",
+      "content": {
+        "cards": [
+          {
+            "front": "hometown",
+            "back": "where you grew up",
+            "example": "Hue is my hometown.",
+            "pronunciation": "/ˈhəʊmtaʊn/"
+          }
+        ]
+      }
+    },
+    {
+      "type": "practice",
+      "title": "Interactive practice",
+      "title_vi": "Luyện tập tương tác",
+      "content": {
+        "exercises": [
+          {
+            "type": "multiple_choice",
+            "prompt": "Choose the correct sentence.",
+            "options": [
+              "I am Minh.",
+              "I is Minh."
+            ],
+            "answer": "I am Minh."
+          },
+          {
+            "type": "sentence_builder",
+            "prompt": "Build the sentence.",
+            "items": [
+              "I",
+              "live",
+              "in",
+              "Hanoi"
+            ],
+            "answer": [
+              "I",
+              "live",
+              "in",
+              "Hanoi"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "game",
+      "title": "Flappy Quiz",
+      "title_vi": "Flappy Quiz",
+      "content": {
+        "game_slug": "flappy-quiz",
+        "question_set": "level-1"
+      }
+    },
+    {
+      "type": "checkpoint",
+      "title": "Checkpoint",
+      "title_vi": "Kiểm tra",
+      "content": {
+        "exercises": [
+          {
+            "type": "fill_blank",
+            "prompt": "I ___ a student.",
+            "answer": "am"
+          }
+        ]
+      }
+    }
+  ]
+}

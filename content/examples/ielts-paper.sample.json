@@ -1,0 +1,48 @@
+{
+  "slug": "academic-reading-test-1",
+  "title": "Academic Reading Practice Test 1",
+  "module": "reading",
+  "test_type": "academic",
+  "duration_minutes": 60,
+  "instructions": "Answer all 40 questions.",
+  "metadata": {
+    "version": 1,
+    "source": "Nexora"
+  },
+  "sections": [
+    {
+      "title": "Reading Passage 1",
+      "passage": "Insert full passage here.",
+      "instructions": "Questions 1–13",
+      "metadata": {
+        "question_range": [
+          1,
+          13
+        ]
+      },
+      "questions": [
+        {
+          "type": "multiple_choice",
+          "prompt": "What is the main idea?",
+          "options": [
+            "A",
+            "B",
+            "C"
+          ],
+          "answer": "B",
+          "explanation": "Explanation here."
+        },
+        {
+          "type": "true_false_not_given",
+          "prompt": "The statement agrees with the passage.",
+          "options": [
+            "TRUE",
+            "FALSE",
+            "NOT GIVEN"
+          ],
+          "answer": "TRUE"
+        }
+      ]
+    }
+  ]
+}
