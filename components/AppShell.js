@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { LayoutDashboard, Map, GraduationCap, Gamepad2, ClipboardCheck, User, LogOut, Gem, Heart, Flame, Menu } from "lucide-react";
+import { LayoutDashboard, Map, GraduationCap, Gamepad2, ClipboardCheck, User, LogOut, Gem, Heart, Flame, Menu, ShieldCheck } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useAuth } from "@/components/AuthProvider";
@@ -17,7 +17,10 @@ export default function AppShell({children}){
     ["/roadmap",t("roadmap"),Map],
     ["/ielts",t("ielts"),GraduationCap],
     ["/games",t("games"),Gamepad2],
-    ["/onboarding",t("profile"),User]
+    ["/onboarding",t("profile"),User],
+    ...(["admin","founder"].includes(profile?.role)
+      ? [["/admin/ielts","Test Studio",ShieldCheck]]
+      : [])
   ];
   async function signOut(){if(supabase)await supabase.auth.signOut();router.replace("/")}
   return <div className={styles.layout}>

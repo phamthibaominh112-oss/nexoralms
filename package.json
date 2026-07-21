@@ -1,6 +1,6 @@
 {
-  "name": "nexora-v3-2-restored",
-  "version": "3.2.0",
+  "name": "nexora-v3-3-admin-test-studio",
+  "version": "3.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev",

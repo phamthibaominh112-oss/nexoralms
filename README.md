@@ -51,3 +51,15 @@ select public.import_ielts_paper_json('<JSON>'::jsonb);
 - Persistent top-bar sign-out button
 - Nexora favicon
 - Question-bank setup guide and placement blueprint SQL
+
+
+## V3.3 Admin Test Studio
+
+- Role-protected `/admin/ielts`
+- Admin/founder-only bundle import
+- Draft/review/published/archive workflow
+- Publishing validation for answer keys and Listening audio
+- Published test library on `/ielts`
+- Converted OSIR ACA 1 bundle with Reading 40, Listening 40, Writing and Speaking
+- Source DOCX retained under `content/source`
+- Admin promotion SQL and complete guide
