@@ -1,6 +1,6 @@
 {
-  "name": "nexora-v3-gamified",
-  "version": "3.0.0",
+  "name": "nexora-v3-1-gamified",
+  "version": "3.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",

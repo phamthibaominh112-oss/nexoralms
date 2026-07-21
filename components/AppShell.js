@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { LayoutDashboard, Map, GraduationCap, Gamepad2, ClipboardCheck, User, LogOut, Gem, Heart, Flame } from "lucide-react";
+import { LayoutDashboard, Map, GraduationCap, Gamepad2, ClipboardCheck, User, LogOut, Gem, Heart, Flame, Menu } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/components/LanguageProvider";
 import { useAuth } from "@/components/AuthProvider";
@@ -32,6 +32,18 @@ export default function AppShell({children}){
       </div>
       <div className={styles.bottom}><LanguageToggle/><strong>{profile?.full_name||user?.email?.split("@")[0]||"Learner"}</strong>{user&&<button onClick={signOut}><LogOut size={16}/>{t("signout")}</button>}</div>
     </aside>
-    <main className={styles.main}>{children}</main>
+    <section className={styles.workspace}>
+      <header className={styles.topbar}>
+        <div className={styles.topIdentity}>
+          <strong>{profile?.full_name||user?.email?.split("@")[0]||"Learner"}</strong>
+          <small>{user?.email||"Demo mode"}</small>
+        </div>
+        <div className={styles.topActions}>
+          <LanguageToggle/>
+          {user&&<button className={styles.topLogout} onClick={signOut}><LogOut size={16}/>{t("signout")}</button>}
+        </div>
+      </header>
+      <main className={styles.main}>{children}</main>
+    </section>
   </div>
 }

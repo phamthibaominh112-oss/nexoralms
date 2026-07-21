@@ -38,3 +38,16 @@ Use Supabase SQL Editor:
 select public.import_lesson_json('<JSON>'::jsonb);
 select public.import_ielts_paper_json('<JSON>'::jsonb);
 ```
+
+
+## V3.1 fixes
+
+- Correct multi-select scoring using set equality
+- Correct options are revealed after checking
+- Flappy Bird replaced with animated Nori
+- Varied, continuously generated gates
+- 40-question four-skill placement matrix
+- Full 40-item Reading and Listening mock structures
+- Persistent top-bar sign-out button
+- Nexora favicon
+- Question-bank setup guide and placement blueprint SQL
