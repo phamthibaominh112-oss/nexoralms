@@ -1,0 +1,5 @@
+"use client";
+import {useEffect,useState} from "react";import{Volume2,Square}from"lucide-react";import{useLanguage}from"@/components/LanguageProvider";
+export default function AudioButton({text,audioUrl,compact=false}){const[playing,setPlaying]=useState(false);const{t}=useLanguage();useEffect(()=>()=>{if(typeof window!=="undefined")window.speechSynthesis?.cancel()},[]);
+function stop(){window.speechSynthesis?.cancel();setPlaying(false)}function play(){if(!text&&!audioUrl)return;if(audioUrl){const a=new Audio(audioUrl);a.onplay=()=>setPlaying(true);a.onended=()=>setPlaying(false);a.onerror=()=>setPlaying(false);a.play();return}if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="en-US";u.rate=.9;u.onstart=()=>setPlaying(true);u.onend=()=>setPlaying(false);u.onerror=()=>setPlaying(false);window.speechSynthesis.speak(u)}
+return <button type="button" onClick={playing?stop:play} className={compact?"secondaryButton":"primaryButton"}>{playing?<Square size={16}/>:<Volume2 size={17}/>} {!compact&&(playing?t("stopAudio"):t("playAudio"))}</button>}

@@ -1,0 +1,1 @@
+.header h1{margin:0;font-size:clamp(38px,5vw,64px);letter-spacing:-2px}.block,.passage{margin-top:22px;padding:26px}.block details{margin-top:18px;color:var(--muted);line-height:1.7}.block textarea{width:100%;min-height:260px;margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:14px;resize:vertical}.passage{font-size:16px;line-height:1.9}

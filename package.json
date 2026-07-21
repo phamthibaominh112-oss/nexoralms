@@ -1,18 +1,1 @@
-{
-  "name": "nexora-ielts-roadmap",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.110.7",
-    "lucide-react": "^0.468.0",
-    "next": "^15.2.6",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  }
-}
+{"name":"nexora-ielts-v2","version":"2.0.0","private":true,"scripts":{"dev":"next dev","build":"next build","start":"next start"},"dependencies":{"@supabase/supabase-js":"^2.57.4","lucide-react":"^0.468.0","next":"^15.2.4","react":"^19.0.0","react-dom":"^19.0.0"}}

@@ -1,0 +1,1 @@
+.wrap{width:min(850px,100%);margin:20px auto;display:grid;gap:26px}.wrap h1{margin:0;font-size:clamp(38px,5vw,60px);letter-spacing:-2px}.form{display:grid;gap:18px;padding:28px}.form label{display:grid;gap:8px;color:#4f5873;font-size:12px;font-weight:850}.form input,.form select{height:48px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:white}

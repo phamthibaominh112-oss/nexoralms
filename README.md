@@ -1,48 +1,11 @@
-# Nexora — Road to IELTS 8.0
+# Nexora IELTS V2
+Included: Supabase auth, onboarding, dashboard, 100-level roadmap, dynamic lessons, EN/VI toggle, browser audio, interactive MCQ/fill/matching/ordering/dictation, IELTS hub, XP/progress.
 
-A deploy-ready Next.js landing page and interactive product prototype using the Nexora brand identity.
+## Setup
+1. Copy `.env.example` to `.env.local`.
+2. Add Supabase URL and publishable key.
+3. Run SQL in `database/` in numeric order.
+4. `npm install && npm run dev`
 
-## Run locally
-
-```bash
-npm install
-npm run dev
-```
-
-Open `http://localhost:3000`.
-
-## Deploy to Vercel
-
-### Option 1 — Vercel website
-1. Upload this folder to a GitHub repository.
-2. Open Vercel and choose **Add New → Project**.
-3. Import the GitHub repository.
-4. Keep the default Next.js settings.
-5. Click **Deploy**.
-
-### Option 2 — Vercel CLI
-```bash
-npm install -g vercel
-vercel
-```
-
-## Included
-
-- Responsive Nexora landing page
-- 100-level IELTS roadmap
-- Feature and pricing sections
-- Interactive demo dashboard
-- LocalStorage progress state
-- Mobile navigation
-- Nexora identity asset
-- Environment file template for future Supabase, YouTube and OpenAI integrations
-
-## Recommended next phase
-
-Connect Supabase Authentication and PostgreSQL for:
-- users
-- lesson progress
-- level unlocking
-- vocabulary review
-- test attempts
-- writing and speaking submissions
+## Vercel
+Push to GitHub, import to Vercel, add the same two environment variables, then redeploy.
